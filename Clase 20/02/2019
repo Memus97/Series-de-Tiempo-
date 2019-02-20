@@ -1,0 +1,29 @@
+america1<-read.csv("C://Users//sala-D19//Documents//Datos históricos AMXL - copia.csv")
+plot(america1)
+americats1<-ts(america1, start = 2017, frequency = 120)
+desamx1<-decompose(americats1)
+names(desamx1)
+desamx1$seasonal
+sinesta<-americats1-desamx$seasonal
+sinesta
+plot(sinesta)
+
+###cálculo covarianza
+base<-read.csv("C://Users//sala-D19//Downloads//IndicadoresENOE.csv")
+base$X10.5..Tasa.de.trabajo.asalariado
+x<-base$X10.2..Tasa.de.desocupación
+y<-base$X10.5..Tasa.de.trabajo.asalariado
+
+xmed<-mean(x)
+ymed<-mean(y)
+
+num<-sum((x-xmed)*(y-ymed))
+cov<-num/55
+cov
+#comprobación
+cov(x,y)
+
+###Cálculo correlación
+
+corr<-cov/(sqrt(var(x)*var(y)))
+corr
