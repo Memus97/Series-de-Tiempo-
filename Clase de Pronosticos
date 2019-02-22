@@ -1,0 +1,49 @@
+install.packages("ggplot2")
+require(ggplot2)
+install.packages("xts")
+require(xts)
+install.packages("forecast")
+require(forecast)
+install.packages("fpp2")
+require(fpp2)
+
+
+##Netflix
+net<-read.csv("C://Users//Alumno-H9//Downloads//accion-netf.csv")
+netts<-ts(net, start = 2018, frequency = 250)
+plot(netts)
+
+
+##metodo de la media
+meanf(st,h)
+media<-meanf(netts,20)
+plot(media)
+
+##Pronostico del ingenuo
+naive(st,h)
+ingenuo<-naive(netts,20)
+plot(ingenuo)
+ingenuo
+
+
+##metodo ingenuo estacional
+snaive(st,h)
+singenuo<-snaive(netts,252)
+plot(singenuo)
+
+
+##metodo de la deriva
+rwf(y, h ,drift = TRUE)
+deri<-rwf(netts, 20, drift = TRUE)
+plot(deri)
+
+
+####
+cerveza2<-window(ausbeer, start=1992, end=c(2007,4))
+#Gráficar algunos pronosticos
+autoplot(cerveza2)+autolayer(meanf(cerveza2,h=11), series = "media", PI=FALSE)+
+  autolayer(naive(cerveza2,h=11),series = "ingenuo", PI=FALSE)+
+  autolayer(snaive(cerveza2, h=11), series = "Ingenuo Estacional", PI=FALSE)+
+  autolayer(rwf(cerveza2, h=11, drift = T), series = "Deriva", PI=FALSE)+
+  ggtitle("Pronosticos produccion cerveza")+xlab("Año")+ylab("Miles de litros")+
+  guides(colour=guide_legend(title = "Pronostico"))
