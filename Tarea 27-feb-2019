@@ -1,0 +1,78 @@
+####################### POBLACIÓN #######################
+  pob<-read.csv("C://Users//ALUMNO-D11//Documents//POBLACIÓN.csv")
+  tspob<-ts(pob, start = 1960)
+  plot(tspob)
+
+
+### PRONÓSTICO DE LA DERIVA
+# rwf(st, h, drift=TRUE)
+  deriva<-rwf(tspob, 20, drift=TRUE)
+  plot(deriva)
+
+
+### RESIDUALES
+  resi<-residuals(rwf(tspob))
+  plot(resi)
+  autoplot(resi)
+
+### HISTOGRAMA
+  gghistogram(resi)+ggtitle("Histograma de residuales")
+
+### AUTOCORRELACION
+ ggAcf(resi)
+
+
+
+
+####################### PIB: % DE CRECIMIENTO ANUAL #######################
+  pib<-read.csv("C://Users//ALUMNO.SALAE-15//Downloads//PIB.csv")
+  pibts<-ts(pib, start = 1961)
+  autoplot(pibts) 
+ 
+  
+### PRONÓSTICO DE LA DERIVA
+  ingest<-snaive(pibts,5)
+  plot(ingest) 
+
+  
+### RESIDUALES
+  respib<-residuals(rwf(pibts))
+  autoplot(respib) 
+
+  
+###HISTOGRAMA
+  gghistogram(respib)+ggtitle("Histograma de Residuales")
+ #No se distribuye normal 
+
+  
+### AUTOCORRELACION
+  ggAcf(respib)
+ #Uno de los residuales está autocorrelacionado lo que significa que el modelo puede ser mejorado
+
+
+  
+####################### Acción televisa #######################
+  Tv<-read.csv("C://Users//GUILLERMO//Downloads//Datos históricos TLVACPO.csv")
+  tsTv<-ts(Tv, start = 2018, frequency = 250)
+  plot(tsTv)
+  
+  
+### PRONÓSTICO DE LA DERIVA
+# rwf(st, h, drift=TRUE)
+  derTv<-rwf(tsTv, 20, drift=TRUE)
+  plot(derTv)
+  
+  
+### RESIDUALES
+  resiTv<-residuals(rwf(tsTv))
+  plot(resiTv)
+  autoplot(resiTv)
+  
+  
+### HISTOGRAMA
+  gghistogram(resiTv)+ggtitle("Histograma de residuales")
+ #Tiene tendencia a una distrubución Normal
+  
+### AUTOCORRELACION
+  ggAcf(resiTv)
+ #Existen dos puntos con Autocorrelación lo que significa que el modelo puede ser mejorado
