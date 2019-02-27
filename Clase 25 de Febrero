@@ -1,0 +1,25 @@
+install.packages("ggplot2")
+require(ggplot2)
+install.packages("forecast")
+require(forecast)
+install.packages("xts")
+require(xts)
+install.packages("fpp2")
+require(fpp2)
+
+##### EJEMPLO
+help("goog200")
+pronos<-naive(goog200)
+names(pronos)
+res1<-residuals(naive(goog200))
+res1
+autoplot(goog200)
+autoplot(res1)
+gghistogram(res1)+ggtitle("Histograma de residuales")
+ggAcf(res1)
+### Nos sirve para ver la autocorrelación en los residuos, si está autocorrelacionado
+# se puede mejorar el modelo. Las fronteras que estan determinadas se encuentran 
+# entre 90 y 95 por ciento de confianza, éstas están determinadas por pruebas de 
+# hipótesis. Hay que fijarse en que se encuentre debajo de la frontera
+# si una serie de tiempo tiene media cercana a cero y varianza constante se trata 
+# de una serie con ruido blanco, si esto ocurre, el pronostico es preciso.
