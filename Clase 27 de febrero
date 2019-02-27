@@ -1,0 +1,46 @@
+###clase 27/02/2019
+
+pib<-read.csv("C://Users//sala-D19//Downloads//PIB.csv")
+pibts<-ts(pib, start = 1961)
+plot(pibts)
+
+suav1<-ses(pibts, alpha = .1, initial = "simple",h=8)
+plot(suav1, ylab = "Pib", xlab = "Año", main = "PIB", type = "o")
+suav2<-ses(pibts, alpha = .3, initial = "simple",h=8)
+plot(suav2, ylab = "Pib", xlab = "Año", main = "PIB", type = "o")
+suav3<-ses(pibts, alpha = .9, initial = "simple",h=8)
+
+plot(suav1, ylab = "Pib", xlab = "Año", main = "PIB", type = "o")
+lines(fitted(suav1),col="brown", type="o")
+lines(fitted(suav2),col="red", type="o")
+lines(fitted(suav3),col="blue", type="o")
+
+legend("topleft",lty = 1,col=c(1,"brown","red","blue"), 
+       c("data",expression(alpha==.1),expression(alpha==.3),expression(alpha==.9)),pch=1)
+
+
+########### Ejercicio ##########
+
+#Con la función window separen la serie del pib 
+#en datos de entrenamiento y datos de prueba(20%)
+#Gráficar los modelos solo en lo que corresponde a 
+#los datos de prueba los valores ajustados de los tres modelos
+
+Dent<-window(pibts, start=1961, end=2006)
+Dpru<-window(pibts, start=2006)
+
+sua1<-ses(Dpru, alpha = .1, initial = "simple",h=8)
+plot(sua1, ylab = "Pib", xlab = "Año", main = "PIB", type = "o")
+sua2<-ses(Dpru, alpha = .3, initial = "simple",h=8)
+plot(sua2, ylab = "Pib", xlab = "Año", main = "PIB", type = "o")
+sua3<-ses(Dpru, alpha = .9, initial = "simple",h=8)
+plot(sua3, ylab = "Pib", xlab = "Año", main = "PIB", type = "o")
+
+
+plot(sua1, ylab = "Pib", xlab = "Año", main = "PIB", type = "o")
+lines(fitted(sua1),col="brown", type="o")
+lines(fitted(sua2),col="red", type="o")
+lines(fitted(sua3),col="blue", type="o")
+
+legend("topleft",lty = 1,col=c(1,"brown","red","blue"), 
+       c("data",expression(alpha==.1),expression(alpha==.3),expression(alpha==.9)),pch=1)
