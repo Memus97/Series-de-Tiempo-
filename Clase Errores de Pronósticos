@@ -1,0 +1,50 @@
+##Entre el error cea más cercano a cero, el pronostico es mejor
+#### Errores de escala ##### 
+#Error absoluto medio: MAE =media (|et|)
+#Error cuadratic medio:RMSE= RAIZ(mean(e^(2)t) )
+
+beer2<-window(ausbeer, start=1992, end=c(2007,4))
+beerfit1<-meanf(beer2,h=10)
+beerfit2<-rwf(beer2,h=10)
+beerfit3<-snaive(beer2,h=10)
+
+autoplot(window(ausbeer,start=1992))+
+  autolayer(beerfit1, series="media", PI=FALSE)+
+  autolayer(beerfit2, series = "ingenuo", PI=FALSE)+
+  autolayer(beerfit3, series = "ingenuo estacional", PI=FALSE)+
+  xlab("Año")+ylab("Litros")+
+  ggtitle("Pronostico")+
+  guides(colour=guide_legend(title = "Pronostico"))
+
+##Elegimos el pronostico del ingenue estacional ya que este es 
+##el que más se acerca a los datos de entrenamiento y por lo tanto 
+##es el pronostico que tiene menos errores
+
+##### Errores a partir de 2008 (inician los datos de prueba)
+
+beer3<-window(ausbeer, start=2008)
+accuracy(beerfit1, beer3)
+
+ME     RMSE      MAE        MPE     MAPE     MASE        ACF1 Theil´s U
+Training set   0.000 43.62858 35.23438 -0.9365102 7.886776 2.463942 -0.10915105        NA
+Test set     -13.775 38.44724 34.82500 -3.9698659 8.283390 2.435315 -0.06905715  0.801254
+
+accuracy(beerfit2, beer3)
+
+ME     RMSE      MAE         MPE     MAPE     MASE        ACF1
+Training set   0.4761905 65.31511 54.73016  -0.9162496 12.16415 3.827284 -0.24098292
+Test set     -51.4000000 62.69290 57.40000 -12.9549160 14.18442 4.013986 -0.06905715
+Theils U
+Training set        NA
+Test set      1.254009
+
+
+accuracy(beerfit3, beer3)
+
+ME     RMSE  MAE        MPE     MAPE      MASE       ACF1 Theils U
+Training set -2.133333 16.78193 14.3 -0.5537713 3.313685 1.0000000 -0.2876333        NA
+Test set      5.200000 14.31084 13.4  1.1475536 3.168503 0.9370629  0.1318407  0.298728
+
+##Una vez determinados los errores de nuestros pronosticos,
+#podemos determinar que el tercer pronostico (el ingenuo estacional) es el mejor
+#dado que los errores de ese pronostico son los mas cercanos a cero.
