@@ -1,0 +1,286 @@
+######## TAREA ANALISIS DE SERIES DE TIEMPO ########
+
+############### IPC ###############
+
+ ipc<-read.csv("C://Users//GUILLERMO//Downloads//Datos históricos S&P_BMV IPC.csv")
+ tsipc<-ts(ipc, start = 2015, frequency = 250)
+ plot(tsipc)
+## En la gráfica de la base de datos del ipc de México se muestran los datos a partir del 2015 al 2019
+## La gráfica nos muestra estacionalidad en los años, ya que observamos que el ipc al principio del año
+## es mayor que al finalizar y de igual forma se puede ver una cierta tentencia positiva.
+
+
+####### DESCOMPOSICIÓN
+ deipc<- decompose(tsipc)
+ plot(deipc)
+ names(deipc)
+ ipcesta<-deipc$seasonal
+ ipcten<-deipc$trend
+ ipcale<-deipc$random
+
+ 
+####### PRONÓSTICOS SIMPLES
+###PRONÓSTICO CON MÉTODO DE LA MEDIA
+# meanf(st, h)
+ medipc<-meanf(tsipc,120)
+ plot(medipc)
+
+###PRONÓSTICO CON MÉTODO DEL INGENUO
+# naive(st, h)
+ ingenuoipc<-naive(tsipc,120)
+ plot(ingenuoipc)
+ ingenuo
+
+###PRONÓSTICO CON MÉTODO INGENUO ESTACIONAL
+# snaive(st, h)
+ ingsipc<-snaive(tsipc,120)
+ plot(ingsipc)
+
+###PRONÓSTICO DE LA DERIVA
+# rwf(st, h, drift=TRUE)
+ deripc<-rwf(tsipc, 120, drift=TRUE)
+ plot(deripc)
+
+ 
+########## SES
+ mod1i<-ses(tsipc, alpha = .1, initial = "simple", h=8)
+ mod2i<-ses(tsipc, alpha=.3, initial="simple", h=8)
+ mod3i<-ses(tsipc, alpha=.9, initial="simple", h=8)
+
+ plot(mod1i, ylab = "% Cierre", xlab = "Año"
+      ,main = "Datos IPC México")
+ lines(fitted(mod1i), col="blue")
+ lines(fitted(mod2i), col="red")
+ lines(fitted(mod3i), col="brown")
+ legend("topleft", lty = 1, col = c("1", "blue", "red", "brown"),
+      c("data", expression(alpha==0.1), expression(alpha==0.3),
+         expression(alpha==.9)), pch = 1)
+
+######## ERRORES
+
+ ipce<-window(tsipc, start=2015, end=c(2018,4)) 
+ ipce1<-meanf(ipce,h=250)
+ ipce2<-rwf(ipce,h=250)
+ ipce3<-snaive(ipce,h=250)
+ 
+ autoplot(window(tsipc,start=2015))+
+   autolayer(ipce1, series="media", PI=FALSE)+
+   autolayer(ipce2, series = "deriva", PI=FALSE)+
+   autolayer(ipce3, series = "ingenuo estacional", PI=FALSE)+
+   xlab("Año")+ylab("% Cierre")+
+   ggtitle("Pronostico")+
+   guides(colour=guide_legend(title = "Pronostico"))
+ 
+ ##El pronostico que más se acerca a los valores reales es el del ingenuo estacional
+
+###### OBTENER LOS ERRORES
+
+ ipcex2<-window(tsipc, start=2018)
+ 
+ accuracy(ipce1, ipcex2)
+                         ME     RMSE      MAE       MPE     MAPE      MASE      ACF1 Theil´s U
+ Training set  9.930901e-15 286.1093 248.0705 -167.4211 197.1217 0.7842994 0.9879855        NA
+ Test set     -2.244293e+01 301.8380 260.5055 -615.7657 646.0473 0.8236139 0.9822665  78.41459
+ 
+ accuracy(ipce2, ipcex2)
+                        ME      RMSE       MAE         MPE      MAPE       MASE       ACF1 Theil´s U
+ Training set    0.6626826  41.89041  30.30677   -1.633353  10.88602 0.09581787 0.05443224        NA
+ Test set     -135.4920000 330.09175 268.26000 -774.441086 790.59225 0.84813058 0.98226647  95.98958
+ 
+ accuracy(ipce3, ipcex2)
+                     ME     RMSE      MAE        MPE      MAPE     MASE      ACF1 Theil´s U
+ Training set  314.9702 352.7323 316.2956   47.42568  47.94981 1.000000 0.9228571        NA
+ Test set     -350.5240 429.4677 357.6120 -847.21614 848.19221 1.130626 0.9659540  92.68071
+ 
+##podemos determinar que el segundo pronostico (el de la deriva) es el mejor
+##dado que los errores de ese pronostico son los mas cercanos a cero.
+
+
+############### GOOGLE ###############
+
+ goo<-read.csv("C://Users//GUILLERMO//Downloads//Datos históricos GOOGL (1).csv")
+ tsgoo<-ts(goo, start = 2015, frequency = 250)
+ plot(tsgoo)
+## En la gráfica de la base de datos de la acción de Google se muestran los datos a partir del 2015 al 2019
+## La gráfica nos muestra una cierta estacionalidad, aun que no muestra una clara tendencia debido a las alzas 
+#y bajas tan grandes y repentinas que presenta en ciertos puntos.
+
+
+####### DESCOMPOSICIÓN
+ degoo<- decompose(tsgoo)
+ plot(degoo)
+ names(degoo)
+ gooesta<-degoo$seasonal
+ gooten<-degoo$trend
+ gooale<-degoo$random
+
+
+####### PRONÓSTICOS SIMPLES
+###PRONÓSTICO CON MÉTODO DE LA MEDIA
+# meanf(st, h)
+ medigoo<-meanf(tsgoo,120)
+ plot(medigoo)
+
+###PRONÓSTICO CON MÉTODO DEL INGENUO
+# naive(st, h)
+ ingenuogoo<-naive(tsgoo,120)
+ plot(ingenuogoo)
+
+###PRONÓSTICO CON MÉTODO INGENUO ESTACIONAL
+# snaive(st, h)
+ ingsgoo<-snaive(tsgoo,120)
+ plot(ingsgoo)
+
+###PRONÓSTICO DE LA DERIVA
+# rwf(st, h, drift=TRUE)
+ derigoo<-rwf(tsgoo, 120, drift=TRUE)
+ plot(derigoo)
+
+
+########## SES
+ mod1g<-ses(tsgoo, alpha = .1, initial = "simple", h=8)
+ mod2g<-ses(tsgoo, alpha=.3, initial="simple", h=8)
+ mod3g<-ses(tsgoo, alpha=.9, initial="simple", h=8)
+
+ plot(mod1g, ylab = "% Cierre", xlab = "Año"
+     ,main = "DATOS GOOGLE")
+ lines(fitted(mod1g), col="blue")
+ lines(fitted(mod2g), col="red")
+ lines(fitted(mod3g), col="brown")
+ legend("topleft", lty = 1, col = c("1", "blue", "red", "brown"),
+       c("data", expression(alpha==0.1), expression(alpha==0.3),
+         expression(alpha==.9)), pch = 1)
+
+######## ERRORES
+
+ gooe<-window(tsgoo, start=2015, end=c(2018,4)) 
+  gooe1<-meanf(gooe,h=250)
+  gooe2<-rwf(gooe,h=250)
+  gooe3<-snaive(gooe,h=250)
+
+ autoplot(window(tsgoo,start=2015))+
+   autolayer(gooe1, series="media", PI=FALSE)+
+   autolayer(gooe2, series = "deriva", PI=FALSE)+
+   autolayer(gooe3, series = "ingenuo estacional", PI=FALSE)+
+   xlab("Año")+ylab("% Cierre")+
+   ggtitle("Pronostico")+
+   guides(colour=guide_legend(title = "Pronostico"))
+ 
+##El ronostico que más se acerca a los valores reales es e de la deriva
+
+###### OBTENER LOS ERRORES
+
+ gooex2<-window(tsgoo, start=2018)
+
+  accuracy(gooe1, gooex2)
+                         ME     RMSE      MAE       MPE     MAPE      MASE      ACF1 Theil´s U
+ Training set -4.797820e-14 254.7054 208.8771 -303.0857 327.6208 0.6829635 0.9269656        NA
+ Test set     -4.029869e+02 420.0007 409.0555 -514.8816 515.5018 1.3374851 0.7145863  3.968465
+
+ 
+  accuracy(gooe2, gooex2)
+                       ME      RMSE     MAE       MPE     MAPE       MASE       ACF1 Theil´s U
+ Training set  -0.2895086  96.18543 23.5405 -198.8819 204.4691 0.07697018 -0.2824002        NA
+ Test set     -15.7760000 119.37772 88.3120 -117.5443 139.0670 0.28875296  0.7145863  1.444147
+
+
+  accuracy(gooe3, gooex2)
+                      ME     RMSE      MAE       MPE     MAPE   MASE     ACF1 Theil´s U
+ Training set   62.99008 359.6536 305.8393 -513.0596 560.3396 1.0000 0.940777        NA
+ Test set     -419.62400 566.8266 477.0480 -532.7418 557.9839 1.5598 0.873549  5.492824
+
+##podemos determinar que el segundo pronostico (el de la deriva) es el mejor
+##dado que los errores de ese pronostico son los mas cercanos a cero.
+
+
+############### APPLE ###############
+
+app<-read.csv("C://Users//GUILLERMO//Downloads//Datos históricos AAPL (2).csv")
+tsapp<-ts(app, start = 2015, frequency = 250)
+plot(tsapp)
+## En la gráfica de la base de datos de la acción de Apple se muestran los datos a partir del 2015 al 2019
+## La gráfica nos muestra un poco estacionalidad en los años, con una tendencia positiva.
+
+
+####### DESCOMPOSICIÓN
+ deapp<- decompose(tsapp)
+ plot(deapp)
+ names(deapp)
+ estapp<-deapp$seasonal
+ tenapp<-deapp$trend
+ aleapp<-deapp$random
+
+
+####### PRONÓSTICOS SIMPLES
+###PRONÓSTICO CON MÉTODO DE LA MEDIA
+# meanf(st, h)
+ mediapp<-meanf(tsapp,120)
+ plot(mediapp)
+
+###PRONÓSTICO CON MÉTODO DEL INGENUO
+# naive(st, h)
+ ingenuoapp<-naive(tsapp,120)
+ plot(ingenuoapp)
+
+###PRONÓSTICO CON MÉTODO INGENUO ESTACIONAL
+# snaive(st, h)
+ ingsapp<-snaive(tsapp,120)
+ plot(ingsapp)
+
+###PRONÓSTICO DE LA DERIVA
+# rwf(st, h, drift=TRUE)
+ derapp<-rwf(tsapp, 120, drift=TRUE)
+ plot(derapp)
+
+
+########## SES
+ mod1a<-ses(tsapp, alpha = .1, initial = "simple", h=8)
+ mod2a<-ses(tsapp, alpha=.3, initial="simple", h=8)
+ mod3a<-ses(tsapp, alpha=.9, initial="simple", h=8)
+
+ plot(mod1a, ylab = "% Cierre", xlab = "Año"
+      ,main = "DATOS APPLE")
+ lines(fitted(mod1a), col="blue")
+ lines(fitted(mod2a), col="red")
+ lines(fitted(mod3a), col="brown")
+ legend("topleft", lty = 1, col = c("1", "blue", "red", "brown"),
+       c("data", expression(alpha==0.1), expression(alpha==0.3),
+         expression(alpha==.9)), pch = 1)
+
+######## ERRORES
+
+ appe<-window(tsapp, start=2015, end=c(2017,4))
+ appe1<-meanf(appe,h=500)
+ appe2<-rwf(appe,h=500)
+ appe3<-snaive(appe,h=500)
+ 
+ autoplot(window(tsapp,start=2015))+
+   autolayer(appe1, series="media", PI=FALSE)+
+   autolayer(appe2, series = "deriva", PI=FALSE)+
+   autolayer(appe3, series = "ingenuo estacional", PI=FALSE)+
+   xlab("Año")+ylab("% Cierre")+
+   ggtitle("Pronostico")+
+   guides(colour=guide_legend(title = "Pronostico"))
+##El ronostico que más se acerca a los valores reales es e de la deriva
+
+###### OBTENER LOS ERRORES
+
+appex2<-window(tsapp, start=2017)
+
+accuracy(appe1, appex2)
+ME     RMSE      MAE       MPE     MAPE      MASE       ACF1 Theilcs U
+Training set -4.053912e-15 23.76587 20.12082 -3.373825 15.94425 0.6081853 0.99482828        NA
+Test set      4.924264e+01 49.26032 49.24264 27.853673 27.85367 1.4884408 0.08091421  26.83718
+
+accuracy(appe2, appex2)
+ME     RMSE     MAE        MPE     MAPE       MASE       ACF1 Theil´s U
+Training set 0.05861333 1.775174 1.25416 0.02897116 1.004884 0.03790907 0.03152002        NA
+Test set     4.26500000 4.464497 4.26500 2.40737645 2.407376 0.12891672 0.08091421  2.496922
+
+accuracy(appe3, appex2)
+ME     RMSE      MAE      MPE     MAPE     MASE      ACF1 Theil´s U
+Training set 20.11507 37.97159 33.08337 10.81691 23.80391 1.000000 0.9943291        NA
+Test set     37.95200 37.99179 37.95200 21.46546 21.46546 1.147162 0.2357339  20.60673
+
+##podemos determinar que el segundo pronostico (el de la deriva) es el mejor
+##dado que los errores de ese pronostico son los mas cercanos a cero.
