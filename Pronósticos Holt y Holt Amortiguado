@@ -1,0 +1,99 @@
+##### HULT ######
+a1<-window(ausair, start=1990)
+prono<-holt(a1, h=5)
+autoplot(prono)
+
+
+##### Amortiguado ######
+prono1<-holt(a1, h=15)
+prono2<-holt(a1,damped = TRUE, phi=0.9, h=15)
+autoplot(a1)+
+  autolayer(prono1, series="Holt", PI=FALSE)+
+  autolayer(prono2, series="Amortiguado Holt", PI=FALSE)+
+  autolayer(prono3, series="SES", PI=FALSE)+
+  ggtitle("pronosticos")+xlab("Año")+ylab("Pasajeros")+
+  guides(colour=guide_legend(title = "PRONO"))
+
+                               
+######### SES ###########
+prono3<-ses(a1, alpha =0.9, initial = "simple", h=15)
+autoplot(prono3)
+
+
+####### tscv es una función para regresar los errores al pronóstico
+e1<-tsCV(a1, ses, h=1)
+e2<-tsCV(a1, holt, h=1)
+e3<-tsCV(a1, holt,damped=TRUE, h=1)
+
+
+####### MSE
+mean(e1^2, na.rm = TRUE)
+#10.58528
+mean(e2^2, na.rm = TRUE)
+#6.577382
+mean(e3^2, na.rm = TRUE)
+#7.386132
+
+####### MAE
+mean(abs(e1), na.rm = TRUE)
+#2.430085
+mean(abs(e2), na.rm = TRUE)
+#1.804368
+mean(abs(e3), na.rm = TRUE)
+#1.868162
+
+#Nos quedamos con el metodo Holt ya que tiene los errores mas pequeños
+
+
+################ Ejercicio ##############
+Pib<-read.csv("C://Users//ALUMNO-D11//Downloads//PIB (1).csv")
+Pibts<-ts(Pib, start = 1980)
+
+###holt
+ppib<-window(Pibts, start=1980)
+prop1<-holt(ppib, h=5)
+autoplot(prop1)
+
+
+##### Amortiguado ######
+prop2<-holt(ppib ,damped = TRUE, phi=0.9, h=15)
+autoplot(prop2)
+
+######### SES ###########
+prop3<-ses(ppib, alpha =0.9, initial = "simple", h=15)
+autoplot(prop3)
+
+
+autoplot(ppib)+
+  autolayer(prop1, series="Holt", PI=FALSE)+
+  autolayer(prop2, series="Amortiguado Holt", PI=FALSE)+
+  autolayer(prop3, series="SES", PI=FALSE)+
+  ggtitle("pronosticos")+xlab("Año")+ylab("%PIB")+
+  guides(colour=guide_legend(title = "PIB México"))
+
+
+####### tscv es una función para regresar los errores al pronóstico
+ep1<-tsCV(ppib, ses, h=1)
+ep2<-tsCV(ppib, holt, h=1)
+ep3<-tsCV(ppib, holt,damped=TRUE, h=1)
+
+
+####### MSE
+mean(ep1^2, na.rm = TRUE)
+#101.3759
+mean(ep2^2, na.rm = TRUE)
+#116.2987
+mean(ep3^2, na.rm = TRUE)
+#104.641
+
+###Elegimos el metodo ses
+
+####### MAE
+mean(abs(ep1), na.rm = TRUE)
+#7.95386
+mean(abs(ep2), na.rm = TRUE)
+#8.321682
+mean(abs(ep3), na.rm = TRUE)
+#7.779692
+
+###Elegimos el Holt Amortigudo
