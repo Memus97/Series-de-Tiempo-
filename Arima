@@ -1,0 +1,36 @@
+bim<-read.csv("C://Users//ALUMNO-D11//Downloads//BIMBO (1).csv")
+
+###bimbo[1:254,2]<-bimbo[254:1,2]###
+
+bimbo<-ts(bim, frequency = 252, start = 2018)
+##Revisar si la serie es estacionaria
+##se aplica la prueba de raiz unitaria a travez de la función 
+###adf.test yesperamos que el p-value sea menor a .05
+
+install.packages("tseries")
+adf.test(bimbo)
+
+##aplicamos la primera diferenciación con la función diff debido a que 
+###la serie original no es estacionaria
+dbimts<-diff(bimbo) 
+adf.test(dbimts)
+
+#Aplicamos dos correlogramas
+#Aqui aplicamos el número de q que se asocia con los números del pro
+par(mfrow=c(1,2))
+acf(dbimts)
+pacf(dbimts)
+  ##P es igual a las lineas que sobrepasan los limites en acf
+  ##q es igual a las lineas que sonrepasan los limites en pacf
+
+modbim1<-Arima(dbimts,order = c(1,1,0))
+modbim2<-Arima(dbimts,order = c(2,1,0))
+modbim3<-Arima(dbimts,order = c(3,1,0))
+modbim4<-Arima(dbimts,order = c(4,1,0))
+
+modbim1
+modbim2
+modbim3
+modbim4
+#el que tenga menor valor de acc es el mejor modelo
+#promedios moviles=
